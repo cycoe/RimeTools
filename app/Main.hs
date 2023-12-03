@@ -1,9 +1,9 @@
 module Main (main) where
 
-import System.IO (readFile)
+import Data.List (intercalate)
 import Options.Applicative
 import Config (Config(..), configP)
-import RimeTable (parseRimeTable)
+import CodeTable (TableFormat(..), RimeTable(..), FcitxTable(..))
 
 main :: IO ()
 main = do
@@ -17,5 +17,6 @@ main = do
 process :: Config -> IO ()
 process config = do
   ls <- fmap lines . readFile $ rimeTableFile config
-  let rt = parseRimeTable ls
-  print rt
+  let ct = unformat $ RimeTable ls
+      FcitxTable ft = format ct
+  writeFile (outputFile config) $ intercalate "\n" ft
